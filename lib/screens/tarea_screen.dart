@@ -31,6 +31,7 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
     super.dispose();
   }
 
+  // Función para mostrar el formulario de añadir tarea
   void _showAddTaskSheet() {
     showModalBottomSheet(
       context: context,
@@ -38,7 +39,7 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => const AddTaskSheet(),
+      builder: (_) => const AddTaskSheet(), // 1. MANEJO DE HORA: El sheet manejará la selección de fecha/hora
     );
   }
 
@@ -67,7 +68,7 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
                           child: Dismissible(
                             key: ValueKey(task.title),
                             direction: DismissDirection.endToStart,
-                            onDismissed: (_) => taskProvider.removeTask(index),
+                            onDismissed: (_) => taskProvider.removeTask(index), // 3. CANCELACION: removeTask cancela la notificación
                             background: Container(
                               alignment: Alignment.centerRight,
                               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -82,15 +83,15 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
                               key: ValueKey(task.title),
                               title: task.title,
                               isDone: task.done,
-                              dueDate: task.dueDate,
-                              dueTime: task.dueTime, // ✅ ← AGREGADO
+                              dueDate: task.dueDate, // 1. MANEJO DE HORA: Pasa la fecha a la tarjeta
+                              dueTime: task.dueTime, // 1. MANEJO DE HORA: Pasa la hora a la tarjeta
                               onToggle: () {
                                 taskProvider.toggleTask(index);
                                 _iconController.forward(from: 0);
                               },
-                              onDelete: () => taskProvider.removeTask(index),
+                              onDelete: () => taskProvider.removeTask(index), // 3. CANCELACION: removeTask cancela la notificación
                               iconRotation: _iconController,
-                              index: index,
+                              index: index, // 2. IDENTIFICADOR: Pasa el índice para edición
                             ),
                           ),
                         ),

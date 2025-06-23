@@ -16,7 +16,7 @@ class NotificationService {
       iOS: iosSettings,
     );
 
-    tz.initializeTimeZones();
+    tz.initializeTimeZones(); // 1. MANEJO DE HORA: Configuración de zona horaria para notificaciones programadas
 
     await _notificationsPlugin.initialize(
       settings,
@@ -57,7 +57,7 @@ class NotificationService {
     const details = NotificationDetails(android: androidDetails);
 
     await _notificationsPlugin.show(
-      DateTime.now().millisecondsSinceEpoch.remainder(100000),
+      DateTime.now().millisecondsSinceEpoch.remainder(100000), // 2. IDENTIFICADOR: Genera un ID único temporal
       title,
       body,
       details,
@@ -68,8 +68,8 @@ class NotificationService {
   static Future<void> scheduleNotification({
     required String title,
     required String body,
-    required DateTime scheduledDate,
-    required int notificationId,
+    required DateTime scheduledDate, // 1. MANEJO DE HORA: Recibe la fecha/hora programada
+    required int notificationId,     // 2. IDENTIFICADOR: Recibe el ID explícito para la notificación
     String? payload,
   }) async {
     const androidDetails = AndroidNotificationDetails(
@@ -83,17 +83,18 @@ class NotificationService {
     const details = NotificationDetails(android: androidDetails);
 
     await _notificationsPlugin.zonedSchedule(
-      notificationId,
+      notificationId, // 2. IDENTIFICADOR: Usa el ID proporcionado para programar
       title,
       body,
-      tz.TZDateTime.from(scheduledDate, tz.local),
+      tz.TZDateTime.from(scheduledDate, tz.local), // 1. MANEJO DE HORA: Convierte a zona horaria local
       details,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: payload,
     );
   }
 
+  // 3. CANCELACION DE NOTIFICACION: Método para cancelar notificaciones por su ID
   static Future<void> cancelNotification(int id) async {
-    await _notificationsPlugin.cancel(id);
+    await _notificationsPlugin.cancel(id); // Importante para limpieza de notificaciones no necesarias
   }
 }

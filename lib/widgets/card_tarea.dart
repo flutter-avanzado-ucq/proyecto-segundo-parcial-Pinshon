@@ -9,8 +9,8 @@ class TaskCard extends StatelessWidget {
   final VoidCallback onToggle;
   final VoidCallback onDelete;
   final Animation<double> iconRotation;
-  final DateTime? dueDate;
-  final TimeOfDay? dueTime;
+  final DateTime? dueDate;      // 1. MANEJO DE HORA: Recibe la fecha de vencimiento
+  final TimeOfDay? dueTime;     // 1. MANEJO DE HORA: Recibe la hora de vencimiento
   final int index;
 
   const TaskCard({
@@ -22,7 +22,7 @@ class TaskCard extends StatelessWidget {
     required this.iconRotation,
     required this.index,
     this.dueDate,
-    this.dueTime,
+    this.dueTime,               // 1. MANEJO DE HORA: Parámetro opcional
   });
 
   @override
@@ -74,6 +74,7 @@ class TaskCard extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
+              // 1. MANEJO DE HORA: Muestra fecha y hora si existen
               if (dueDate != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
@@ -107,13 +108,13 @@ class TaskCard extends StatelessWidget {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                     ),
-                    builder: (_) => EditTaskSheet(index: index),
+                    builder: (_) => EditTaskSheet(index: index), // Abre editor con el índice
                   );
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.delete_outline, color: Colors.red),
-                onPressed: onDelete,
+                onPressed: onDelete, // 3. CANCELACION IMPLÍCITA: El onDelete del provider ya cancela la notificación
               ),
             ],
           ),
