@@ -16,7 +16,8 @@ class NotificationService {
       iOS: iosSettings,
     );
 
-    tz.initializeTimeZones(); // 1. MANEJO DE HORA: Configuración de zona horaria para notificaciones programadas
+    // Inicialización de zonas horarias (necesario para notificaciones programadas)
+    tz.initializeTimeZones();
 
     await _notificationsPlugin.initialize(
       settings,
@@ -26,7 +27,7 @@ class NotificationService {
 
   static void _onNotificationResponse(NotificationResponse response) {
     if (response.payload != null) {
-      print('🔔 Payload: ${response.payload}');
+      print('Payload: ${response.payload}');
     }
   }
 
@@ -57,7 +58,7 @@ class NotificationService {
     const details = NotificationDetails(android: androidDetails);
 
     await _notificationsPlugin.show(
-      DateTime.now().millisecondsSinceEpoch.remainder(100000), // 2. IDENTIFICADOR: Genera un ID único temporal
+      DateTime.now().millisecondsSinceEpoch.remainder(100000),
       title,
       body,
       details,
@@ -68,8 +69,8 @@ class NotificationService {
   static Future<void> scheduleNotification({
     required String title,
     required String body,
-    required DateTime scheduledDate, // 1. MANEJO DE HORA: Recibe la fecha/hora programada
-    required int notificationId,     // 2. IDENTIFICADOR: Recibe el ID explícito para la notificación
+    required DateTime scheduledDate,
+    required int notificationId,
     String? payload,
   }) async {
     const androidDetails = AndroidNotificationDetails(
@@ -83,18 +84,17 @@ class NotificationService {
     const details = NotificationDetails(android: androidDetails);
 
     await _notificationsPlugin.zonedSchedule(
-      notificationId, // 2. IDENTIFICADOR: Usa el ID proporcionado para programar
+      notificationId,
       title,
       body,
-      tz.TZDateTime.from(scheduledDate, tz.local), // 1. MANEJO DE HORA: Convierte a zona horaria local
+      tz.TZDateTime.from(scheduledDate, tz.local),
       details,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: payload,
     );
   }
 
-  // 3. CANCELACION DE NOTIFICACION: Método para cancelar notificaciones por su ID
   static Future<void> cancelNotification(int id) async {
-    await _notificationsPlugin.cancel(id); // Importante para limpieza de notificaciones no necesarias
+    await _notificationsPlugin.cancel(id);
   }
 }

@@ -31,7 +31,6 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  // Función para mostrar el formulario de añadir tarea
   void _showAddTaskSheet() {
     showModalBottomSheet(
       context: context,
@@ -39,7 +38,7 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => const AddTaskSheet(), // 1. MANEJO DE HORA: El sheet manejará la selección de fecha/hora
+      builder: (_) => const AddTaskSheet(),
     );
   }
 
@@ -66,9 +65,10 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
                         verticalOffset: 30.0,
                         child: FadeInAnimation(
                           child: Dismissible(
-                            key: ValueKey(task.title),
+                            // Integración Hive: uso de task.key (HiveObject)
+                            key: ValueKey(task.key),
                             direction: DismissDirection.endToStart,
-                            onDismissed: (_) => taskProvider.removeTask(index), // 3. CANCELACION: removeTask cancela la notificación
+                            onDismissed: (_) => taskProvider.removeTask(index),
                             background: Container(
                               alignment: Alignment.centerRight,
                               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -80,18 +80,17 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
                               child: const Icon(Icons.delete, color: Colors.white),
                             ),
                             child: TaskCard(
-                              key: ValueKey(task.title),
+                              key: ValueKey(task.key), // Integración Hive: uso de task.key
                               title: task.title,
                               isDone: task.done,
-                              dueDate: task.dueDate, // 1. MANEJO DE HORA: Pasa la fecha a la tarjeta
-                              dueTime: task.dueTime, // 1. MANEJO DE HORA: Pasa la hora a la tarjeta
+                              dueDate: task.dueDate,
                               onToggle: () {
                                 taskProvider.toggleTask(index);
                                 _iconController.forward(from: 0);
                               },
-                              onDelete: () => taskProvider.removeTask(index), // 3. CANCELACION: removeTask cancela la notificación
+                              onDelete: () => taskProvider.removeTask(index),
                               iconRotation: _iconController,
-                              index: index, // 2. IDENTIFICADOR: Pasa el índice para edición
+                              index: index,
                             ),
                           ),
                         ),

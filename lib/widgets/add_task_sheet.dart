@@ -12,8 +12,8 @@ class AddTaskSheet extends StatefulWidget {
 
 class _AddTaskSheetState extends State<AddTaskSheet> {
   final _controller = TextEditingController();
-  DateTime? _selectedDate;  // 1. MANEJO DE HORA: Almacena la fecha seleccionada
-  TimeOfDay? _selectedTime; // 1. MANEJO DE HORA: Almacena la hora seleccionada
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
   @override
   void dispose() {
@@ -24,52 +24,46 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
   void _submit() async {
     final text = _controller.text.trim();
     if (text.isNotEmpty) {
-      int? notificationId; // 2. IDENTIFICADOR: Variable para almacenar el ID de notificación
+      int? notificationId;
+      DateTime? finalDueDate;
 
-      // Notificación inmediata al agregar tarea
       await NotificationService.showImmediateNotification(
         title: 'Nueva tarea',
         body: 'Has agregado la tarea: $text',
         payload: 'Tarea: $text',
       );
 
-      // 1. MANEJO DE HORA: Si hay fecha y hora seleccionadas, programa notificación
       if (_selectedDate != null && _selectedTime != null) {
-        // Combina fecha y hora seleccionadas
-        final scheduledDateTime = DateTime(
+        finalDueDate = DateTime(
           _selectedDate!.year,
           _selectedDate!.month,
           _selectedDate!.day,
-          _selectedTime!.hour,    // 1. MANEJO DE HORA: Usa la hora seleccionada
-          _selectedTime!.minute,   // 1. MANEJO DE HORA: Usa los minutos seleccionados
+          _selectedTime!.hour,
+          _selectedTime!.minute,
         );
 
-        // 2. IDENTIFICADOR: Genera un ID único basado en el timestamp actual
         notificationId = DateTime.now().millisecondsSinceEpoch.remainder(100000);
 
-        // Programa la notificación
         await NotificationService.scheduleNotification(
           title: 'Recordatorio de tarea',
           body: 'No olvides: $text',
-          scheduledDate: scheduledDateTime, // 1. MANEJO DE HORA: Pasa la fecha/hora combinada
-          payload: 'Tarea programada: $text para $scheduledDateTime',
-          notificationId: notificationId, // 2. IDENTIFICADOR: Pasa el ID generado
+          scheduledDate: finalDueDate,
+          payload: 'Tarea programada: $text para $finalDueDate',
+          notificationId: notificationId,
         );
       }
 
-      // Agrega la tarea al provider
+      // Integración Hive: guardar la tarea en Provider + Hive
       Provider.of<TaskProvider>(context, listen: false).addTask(
         text,
-        dueDate: _selectedDate,    // 1. MANEJO DE HORA: Pasa la fecha seleccionada
-        dueTime: _selectedTime,    // 1. MANEJO DE HORA: Pasa la hora seleccionada
-        notificationId: notificationId, // 2. IDENTIFICADOR: Pasa el ID de notificación
+        dueDate: finalDueDate ?? _selectedDate, // Integración Hive: se pasa la fecha completa
+        notificationId: notificationId,
       );
 
       Navigator.pop(context);
     }
   }
 
-  // 1. MANEJO DE HORA: Método para seleccionar fecha
   Future<void> _pickDate() async {
     final now = DateTime.now();
     final picked = await showDatePicker(
@@ -85,7 +79,6 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
     }
   }
 
-  // 1. MANEJO DE HORA: Método para seleccionar hora
   Future<void> _pickTime() async {
     final picked = await showTimePicker(
       context: context,
@@ -122,7 +115,6 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
             onSubmitted: (_) => _submit(),
           ),
           const SizedBox(height: 12),
-          // 1. MANEJO DE HORA: Selector de fecha
           Row(
             children: [
               ElevatedButton(
@@ -135,7 +127,6 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
             ],
           ),
           const SizedBox(height: 12),
-          // 1. MANEJO DE HORA: Selector de hora
           Row(
             children: [
               ElevatedButton(
