@@ -6,6 +6,7 @@ import 'screens/tarea_screen.dart';
 import 'tema/tema_app.dart';
 import 'package:provider/provider.dart';
 import 'provider_task/task_provider.dart';
+import 'provider_task/theme_provider.dart'; // NUEVO
 
 // Importar modelo para Hive
 import 'models/task_model.dart';
@@ -34,8 +35,11 @@ void main() async {
 
   // Iniciar la app
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => TaskProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => TaskProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()), // ✅ NUEVO
+      ],
       child: const MyApp(),
     ),
   );
@@ -46,11 +50,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Tareas Pro',
-      theme: AppTheme.theme,
-      home: const TaskScreen(),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Tareas Pro',
+          theme: AppTheme.theme,
+          darkTheme: ThemeData.dark(),
+          themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          home: const TaskScreen(),
+        );
+      },
     );
   }
 }
