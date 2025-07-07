@@ -1,0 +1,58 @@
+{
+  "@@locale": "en",
+  "appTitle": "Task Manager",
+  "appName": "Task Pro",
+  "addTask": "Add task",
+  "editTask": "Edit task",
+  "deleteTask": "Delete task",
+  "taskDetails": "Task details",
+  "changeTheme": "Change theme",
+  "addNewTask": "Add new task",
+  "description": "Description",
+  "selectDate": "Select date",
+  "selectDateButton": "Select date",
+  "selectTime": "Select time",
+  "timeLabel": "Time:",
+  "dueDate": "Due:",
+  "hourLabel": "Time:",
+  "titleLabel": "Title",
+  "saveChanges": "Save changes",
+  "greeting": "Hi, Liliana 👋",
+  "todayTasks": "These are your tasks for today",
+  "name": "name",
+  "changeDate": "Change Date",
+  "changeTime": "Change Time",
+  "editTaskTitle": "Edit Task",
+  "taskUpdatedNotification": "Task updated",
+  "newTaskNotification": "New task",
+  "taskReminder": "Task reminder",
+  "editTooltip": "Edit task",
+  "deleteTooltip": "Delete task",
+  "completedStatus": "Completed",
+  "updatedReminder": "Updated task reminder",
+  "@updatedReminder": {
+    "description": "Title for updated task reminder notification"
+  },
+  
+  "newTaskBody": "You've added the task: {taskName}",
+  "@newTaskBody": {
+    "description": "Notification body when adding new task",
+    "placeholders": {
+      "taskName": {
+        "type": "String",
+        "example": "Buy groceries"
+      }
+    }
+  },
+  
+  "taskUpdatedBody": "You've updated the task: {taskName}",
+  "@taskUpdatedBody": {
+    "description": "Notification body when updating task",
+    "placeholders": {
+      "taskName": {
+        "type": "String",
+        "example": "Buy groceries"
+      }
+    }
+  }
+}

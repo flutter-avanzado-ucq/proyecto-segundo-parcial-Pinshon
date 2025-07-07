@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider_task/task_provider.dart';
 import '../services/notification_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditTaskSheet extends StatefulWidget {
   final int index;
@@ -23,17 +24,15 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
     final task = Provider.of<TaskProvider>(context, listen: false).tasks[widget.index];
     _controller = TextEditingController(text: task.title);
     _selectedDate = task.dueDate;
-
-    if (task.dueDate != null) {
-      _selectedTime = TimeOfDay.fromDateTime(task.dueDate!);
-    } else {
-      _selectedTime = const TimeOfDay(hour: 8, minute: 0);
-    }
+    _selectedTime = task.dueDate != null 
+        ? TimeOfDay.fromDateTime(task.dueDate!)
+        : const TimeOfDay(hour: 8, minute: 0);
   }
 
   void _submit() async {
     final newTitle = _controller.text.trim();
     if (newTitle.isNotEmpty) {
+      final localizations = AppLocalizations.of(context)!;
       int? notificationId;
       DateTime? finalDueDate;
 
@@ -44,9 +43,8 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
       }
 
       await NotificationService.showImmediateNotification(
-        title: 'Tarea actualizada',
-        body: 'Has actualizado la tarea: $newTitle',
-        payload: 'Tarea actualizada: $newTitle',
+        title: localizations.taskUpdatedNotification,
+        body: localizations.taskUpdatedBody(newTitle),
       );
 
       if (_selectedDate != null && _selectedTime != null) {
@@ -61,19 +59,17 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
         notificationId = DateTime.now().millisecondsSinceEpoch.remainder(100000);
 
         await NotificationService.scheduleNotification(
-          title: 'Recordatorio de tarea actualizada',
-          body: 'No olvides: $newTitle',
+          title: localizations.updatedReminder,
+          body: localizations.taskUpdatedBody(newTitle),
           scheduledDate: finalDueDate,
-          payload: 'Tarea actualizada: $newTitle para $finalDueDate',
           notificationId: notificationId,
         );
       }
 
-      // Integración Hive: actualizar la tarea en Provider + Hive
       Provider.of<TaskProvider>(context, listen: false).updateTask(
         widget.index,
         newTitle,
-        newDate: finalDueDate ?? _selectedDate, // Integración Hive: se pasa la fecha completa
+        newDate: finalDueDate ?? _selectedDate,
         notificationId: notificationId,
       );
 
@@ -90,9 +86,7 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
       lastDate: DateTime(now.year + 5),
     );
     if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-      });
+      setState(() => _selectedDate = picked);
     }
   }
 
@@ -102,14 +96,14 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
       initialTime: _selectedTime ?? TimeOfDay.now(),
     );
     if (picked != null) {
-      setState(() {
-        _selectedTime = picked;
-      });
+      setState(() => _selectedTime = picked);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
@@ -120,14 +114,17 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Editar tarea', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            localizations.editTaskTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           TextField(
             controller: _controller,
             autofocus: true,
-            decoration: const InputDecoration(
-              labelText: 'Título',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: localizations.titleLabel,
+              border: const OutlineInputBorder(),
             ),
             onSubmitted: (_) => _submit(),
           ),
@@ -136,7 +133,7 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
             children: [
               ElevatedButton(
                 onPressed: _pickDate,
-                child: const Text('Cambiar fecha'),
+                child: Text(localizations.changeDate),
               ),
               const SizedBox(width: 10),
               if (_selectedDate != null)
@@ -148,10 +145,10 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
             children: [
               ElevatedButton(
                 onPressed: _pickTime,
-                child: const Text('Cambiar hora'),
+                child: Text(localizations.changeTime),
               ),
               const SizedBox(width: 10),
-              const Text('Hora: '),
+              Text(localizations.timeLabel),
               if (_selectedTime != null)
                 Text('${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}'),
             ],
@@ -160,7 +157,7 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
           ElevatedButton.icon(
             onPressed: _submit,
             icon: const Icon(Icons.check),
-            label: const Text('Guardar cambios'),
+            label: Text(localizations.saveChanges),
           ),
         ],
       ),

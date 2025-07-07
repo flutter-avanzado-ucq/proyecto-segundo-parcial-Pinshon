@@ -10,13 +10,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  flutter_localizations:
+    sdk: flutter
 
   # Dependencias principales
   cupertino_icons: ^1.0.8
   google_fonts: ^6.1.0
   flutter_staggered_animations: ^1.1.1
   provider: ^6.1.1
-  intl: ^0.18.1
+  intl: ^0.19.0
   timezone: ^0.10.1
   permission_handler: ^11.3.0
   flutter_local_notifications: ^19.2.1
@@ -37,3 +40,4 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true

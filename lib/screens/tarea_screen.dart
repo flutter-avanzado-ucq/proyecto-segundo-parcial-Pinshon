@@ -5,7 +5,8 @@ import '../widgets/card_tarea.dart';
 import '../widgets/header.dart';
 import '../widgets/add_task_sheet.dart';
 import '../provider_task/task_provider.dart';
-import '../provider_task/theme_provider.dart'; // ✅ Nuevo import
+import '../provider_task/theme_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -33,37 +34,35 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
   }
 
   void _showAddTaskSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => const AddTaskSheet(),
-    );
-  }
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (BuildContext context) {
+      return const AddTaskSheet();
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
     final taskProvider = context.watch<TaskProvider>();
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tareas Pro'),
+        title: Text(localizations.appTitle),
         actions: [
-          // ✅ IconButton para cambiar tema claro/oscuro
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
               return IconButton(
-                icon: Icon(
-                  themeProvider.isDarkMode
-                      ? Icons.dark_mode
-                      : Icons.light_mode,
-                ),
-                tooltip: 'Cambiar tema',
-                onPressed: () {
-                  themeProvider.toggleTheme();
-                },
+                icon: Icon(themeProvider.isDarkMode 
+                    ? Icons.dark_mode 
+                    : Icons.light_mode),
+                tooltip: localizations.changeTheme,
+                onPressed: () => themeProvider.toggleTheme(),
               );
             },
           ),
@@ -87,7 +86,6 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
                         verticalOffset: 30.0,
                         child: FadeInAnimation(
                           child: Dismissible(
-                            // Integración Hive: uso de task.key (HiveObject)
                             key: ValueKey(task.key),
                             direction: DismissDirection.endToStart,
                             onDismissed: (_) => taskProvider.removeTask(index),
@@ -102,7 +100,7 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
                               child: const Icon(Icons.delete, color: Colors.white),
                             ),
                             child: TaskCard(
-                              key: ValueKey(task.key), // Integración Hive: uso de task.key
+                              key: ValueKey(task.key),
                               title: task.title,
                               isDone: task.done,
                               dueDate: task.dueDate,
@@ -127,6 +125,7 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddTaskSheet,
+        tooltip: localizations.addTask,
         backgroundColor: Colors.pinkAccent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),

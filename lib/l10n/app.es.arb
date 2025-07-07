@@ -1,0 +1,58 @@
+{
+  "@@locale": "es",
+  "appTitle": "Tareas Pro",
+  "appName": "Tareas Pro",
+  "addTask": "Agregar tarea",
+  "editTask": "Editar tarea",
+  "deleteTask": "Eliminar tarea",
+  "taskDetails": "Detalles de la tarea",
+  "changeTheme": "Cambiar tema",
+  "addNewTask": "Agregar nueva tarea",
+  "description": "Descripción",
+  "selectDate": "Seleccionar fecha",
+  "selectDateButton": "Seleccionar fecha",
+  "selectTime": "Seleccionar hora",
+  "timeLabel": "Hora:",
+  "dueDate": "Vence:",
+  "hourLabel": "Hora:",
+  "titleLabel": "Título",
+  "saveChanges": "Guardar cambios",
+  "greeting": "Hola, Liliana 👋",
+  "todayTasks": "Estas son tus tareas para hoy",
+  "name": "nombre",
+  "changeDate": "Cambiar fecha",
+  "changeTime": "Cambiar hora",
+  "editTaskTitle": "Editar Tarea",
+  "taskUpdatedNotification": "Tarea actualizada",
+  "newTaskNotification": "Nueva tarea",
+  "taskReminder": "Recordatorio de tarea",
+  "editTooltip": "Editar tarea",
+  "deleteTooltip": "Eliminar tarea",
+  "completedStatus": "Completada",
+  "updatedReminder": "Recordatorio de tarea actualizada",
+  "@updatedReminder": {
+    "description": "Título para notificación de recordatorio actualizado"
+  },
+  
+  "newTaskBody": "Has agregado la tarea: {taskName}",
+  "@newTaskBody": {
+    "description": "Notificación al agregar tarea",
+    "placeholders": {
+      "taskName": {
+        "type": "String",
+        "example": "Comprar víveres"
+      }
+    }
+  },
+  
+  "taskUpdatedBody": "Has actualizado la tarea: {taskName}",
+  "@taskUpdatedBody": {
+    "description": "Notificación al actualizar tarea",
+    "placeholders": {
+      "taskName": {
+        "type": "String",
+        "example": "Comprar víveres"
+      }
+    }
+  }
+}
