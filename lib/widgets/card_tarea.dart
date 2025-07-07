@@ -1,120 +1,60 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../widgets/edit_task_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../models/task_model.dart';
 
 class TaskCard extends StatelessWidget {
-  final String title;
-  final bool isDone;
+  final Task task;
   final VoidCallback onToggle;
   final VoidCallback onDelete;
-  final Animation<double> iconRotation;
-  final DateTime? dueDate;
-  final int index;
+  final VoidCallback onEdit;
 
   const TaskCard({
     super.key,
-    required this.title,
-    required this.isDone,
+    required this.task,
     required this.onToggle,
     required this.onDelete,
-    required this.iconRotation,
-    required this.index,
-    this.dueDate,
+    required this.onEdit,
   });
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 500),
-      opacity: isDone ? 0.4 : 1.0,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isDone ? const Color(0xFFD0F0C0) : const Color(0xFFFFF8E1),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: ListTile(
+        leading: Checkbox(
+          value: task.done,
+          onChanged: (_) => onToggle(),
         ),
-        child: ListTile(
-          leading: GestureDetector(
-            onTap: onToggle,
-            child: AnimatedBuilder(
-              animation: iconRotation,
-              builder: (context, child) {
-                return Transform.rotate(
-                  angle: iconRotation.value * pi,
-                  child: Icon(
-                    isDone ? Icons.refresh : Icons.radio_button_unchecked,
-                    color: isDone ? Colors.teal : Colors.grey,
-                    size: 30,
-                  ),
-                );
-              },
-            ),
+        title: Text(
+          task.title,
+          style: TextStyle(
+            decoration: task.done ? TextDecoration.lineThrough : null,
           ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  decoration: isDone ? TextDecoration.lineThrough : null,
-                  fontSize: 18,
-                  color: isDone ? Colors.black45 : Colors.black87,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              if (dueDate != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: [
-                      Text(
-                        '${localizations.dueDate} ${DateFormat('dd/MM/yyyy').format(dueDate!)}',
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                      Text(
-                        '${localizations.hourLabel} ${DateFormat('HH:mm').format(dueDate!)}',
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
+        ),
+        subtitle: task.dueDate != null
+            ? Builder(
+                builder: (context) {
+                  final locale = Localizations.localeOf(context).toString();
+                  return Text(
+                    '${DateFormat.yMd(locale).format(task.dueDate!)} ${DateFormat.Hm(locale).format(task.dueDate!)}',
+                    style: const TextStyle(color: Colors.grey),
+                  );
+                },
+              )
+            : null,
+        trailing: SizedBox(
+          width: 100,
+          child: Row(
             children: [
               IconButton(
                 icon: const Icon(Icons.edit, color: Colors.blue),
-                tooltip: localizations.editTooltip,
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                    ),
-                    builder: (_) => EditTaskSheet(index: index),
-                  );
-                },
+                onPressed: onEdit,
               ),
               IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red),
-                tooltip: localizations.deleteTooltip,
+                icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: onDelete,
               ),
             ],

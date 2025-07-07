@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../widgets/card_tarea.dart';
 import '../widgets/header.dart';
 import '../widgets/add_task_sheet.dart';
+import '../widgets/edit_task_sheet.dart';
 import '../provider_task/task_provider.dart';
 import '../provider_task/theme_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'settings_screen.dart';
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -34,17 +36,15 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
   }
 
   void _showAddTaskSheet() {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (BuildContext context) {
-      return const AddTaskSheet();
-    },
-  );
-}
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => const AddTaskSheet(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,16 +55,21 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
       appBar: AppBar(
         title: Text(localizations.appTitle),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: localizations.language,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+            ),
+          ),
           Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
-              return IconButton(
-                icon: Icon(themeProvider.isDarkMode 
-                    ? Icons.dark_mode 
-                    : Icons.light_mode),
-                tooltip: localizations.changeTheme,
-                onPressed: () => themeProvider.toggleTheme(),
-              );
-            },
+            builder: (context, themeProvider, _) => IconButton(
+              icon: Icon(themeProvider.isDarkMode 
+                  ? Icons.dark_mode 
+                  : Icons.light_mode),
+              onPressed: themeProvider.toggleTheme,
+            ),
           ),
         ],
       ),
@@ -72,6 +77,13 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
         child: Column(
           children: [
             const Header(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(
+                localizations.pendingTasks(taskProvider.tasks.length),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
             Expanded(
               child: AnimationLimiter(
                 child: ListView.builder(
@@ -101,16 +113,17 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
                             ),
                             child: TaskCard(
                               key: ValueKey(task.key),
-                              title: task.title,
-                              isDone: task.done,
-                              dueDate: task.dueDate,
+                              task: task,
                               onToggle: () {
                                 taskProvider.toggleTask(index);
                                 _iconController.forward(from: 0);
                               },
                               onDelete: () => taskProvider.removeTask(index),
-                              iconRotation: _iconController,
-                              index: index,
+                              onEdit: () => showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (_) => EditTaskSheet(index: index),
+                              ),
                             ),
                           ),
                         ),
@@ -130,7 +143,7 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Icon(Icons.calendar_today),
+        child: const Icon(Icons.add),
       ),
     );
   }

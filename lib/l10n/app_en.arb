@@ -29,30 +29,19 @@
   "editTooltip": "Edit task",
   "deleteTooltip": "Delete task",
   "completedStatus": "Completed",
-  "updatedReminder": "Updated task reminder",
-  "@updatedReminder": {
-    "description": "Title for updated task reminder notification"
-  },
+  "language": "Language",
+  "systemLanguage": "System language",
+  "noDueDate": "No due date",
+  "noTime": "No time set",
+  "confirmDelete": "Delete this task?",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  
+  "pendingTasks": "{count, plural, =0{No pending tasks} =1{1 pending task} other{{count} pending tasks}}",
   
   "newTaskBody": "You've added the task: {taskName}",
-  "@newTaskBody": {
-    "description": "Notification body when adding new task",
-    "placeholders": {
-      "taskName": {
-        "type": "String",
-        "example": "Buy groceries"
-      }
-    }
-  },
   
   "taskUpdatedBody": "You've updated the task: {taskName}",
-  "@taskUpdatedBody": {
-    "description": "Notification body when updating task",
-    "placeholders": {
-      "taskName": {
-        "type": "String",
-        "example": "Buy groceries"
-      }
-    }
-  }
+  
+  "updatedReminder": "Reminder: {taskName}"
 }
