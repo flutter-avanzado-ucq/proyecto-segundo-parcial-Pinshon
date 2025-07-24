@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import '../../models/task_model.dart';
+import '../provider_task/holiday_provider.dart'; // Nuevo 24 de julio
 
 class TaskCard extends StatelessWidget {
   final Task task;
@@ -20,6 +22,13 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final holidays = context.watch<HolidayProvider>().holidays;
+    final isHoliday = task.dueDate != null &&
+        holidays != null &&
+        holidays.any((h) =>
+            h.date.year == task.dueDate!.year &&
+            h.date.month == task.dueDate!.month &&
+            h.date.day == task.dueDate!.day);
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -38,10 +47,28 @@ class TaskCard extends StatelessWidget {
             ? Builder(
                 builder: (context) {
                   final locale = Localizations.localeOf(context).toString();
-                  return Text(
+                  final dateText = Text(
                     '${DateFormat.yMd(locale).format(task.dueDate!)} ${DateFormat.Hm(locale).format(task.dueDate!)}',
                     style: const TextStyle(color: Colors.grey),
                   );
+                  if (isHoliday) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        dateText,
+                        Text(
+                          localizations.holidayTag, // Replace 'holidayTag' with the correct getter name from your localization file
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return dateText;
+                  }
                 },
               )
             : null,

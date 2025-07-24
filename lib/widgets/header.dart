@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../provider_task/weather_provider.dart';
+import '../provider_task/holiday_provider.dart'; // Nuevo 24 de julio
 
 class Header extends StatefulWidget {
   const Header({super.key});
@@ -26,6 +27,10 @@ class _HeaderState extends State<Header> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final weatherProvider = Provider.of<WeatherProvider>(context);
+
+    //Acceso al provider feriados
+    final holidayProvider = Provider.of<HolidayProvider>(context);
+    final holidayToday = holidayProvider.todayHoliday;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
@@ -57,6 +62,12 @@ class _HeaderState extends State<Header> {
                   localizations.todayTasks,
                   style: const TextStyle(color: Colors.white70, fontSize: 14),
                 ),
+                if (holidayToday != null)
+                  Text(
+                    '🎉 Hoy es feriado: ${holidayToday.localName}',
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+
                 const SizedBox(height: 8),
                 
                 // Sección del clima

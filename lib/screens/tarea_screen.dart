@@ -10,6 +10,7 @@ import '../provider_task/task_provider.dart';
 import '../provider_task/theme_provider.dart';
 import 'settings_screen.dart';
 import '../provider_task/weather_provider.dart'; // Nuevo 23 de julio
+import '../provider_task/holiday_provider.dart'; // Nuevo 24 de julio
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -35,6 +36,13 @@ class _TaskScreenState extends State<TaskScreen>
       final weatherProvider = context.read<WeatherProvider>();
       await weatherProvider.loadWeather(20.5888, -100.3899); // Ciudad de México
     });
+
+    //NUEVO DIAS 24 DE JULIO
+    final now = DateTime.now();
+    context.read<HolidayProvider>().loadHolidays(
+          year: now.year,
+          countryCode: 'MX', // Código de país para México
+        );
   }
 
   @override

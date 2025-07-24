@@ -36,6 +36,7 @@
   "confirmDelete": "¿Eliminar esta tarea?",
   "cancel": "Cancelar",
   "confirm": "Confirmar",
+  "holidayTag": "Feriado",
   
   "pendingTasks": "{count, plural, =0{No hay tareas pendientes} =1{1 tarea pendiente} other{{count} tareas pendientes}}",
   
