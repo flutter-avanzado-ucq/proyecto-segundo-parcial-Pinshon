@@ -10,6 +10,7 @@ import 'services/notification_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'tema/tema_app.dart';
+import 'provider_task/weather_provider.dart'; // Nuevo 23 de julio
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,10 +27,8 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => TaskProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(
-          create: (_) => LocaleProvider()..loadSavedLocale(),
-          lazy: false,
-        ),
+        ChangeNotifierProvider(create: (_) => LocaleProvider()), // Nuevo 23 de julio
+        ChangeNotifierProvider(create: (_) => WeatherProvider()), // Nuevo 23 de julio  
       ],
       child: const MyApp(),
     ),

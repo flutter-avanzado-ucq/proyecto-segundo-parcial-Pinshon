@@ -24,6 +24,7 @@ dependencies:
   permission_handler: ^11.3.0
   flutter_local_notifications: ^19.2.1
   shared_preferences: ^2.0.15
+  http: ^1.2.0
 
   # Hive (Base de datos local)
   hive: ^2.0.3

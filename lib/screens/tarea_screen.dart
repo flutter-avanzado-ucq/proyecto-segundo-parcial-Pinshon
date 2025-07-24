@@ -9,6 +9,7 @@ import '../widgets/edit_task_sheet.dart';
 import '../provider_task/task_provider.dart';
 import '../provider_task/theme_provider.dart';
 import 'settings_screen.dart';
+import '../provider_task/weather_provider.dart'; // Nuevo 23 de julio
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -17,7 +18,8 @@ class TaskScreen extends StatefulWidget {
   State<TaskScreen> createState() => _TaskScreenState();
 }
 
-class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateMixin {
+class _TaskScreenState extends State<TaskScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _iconController;
 
   @override
@@ -27,6 +29,12 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+
+    //NUEVO 23 de julio
+    Future.microtask(() async {
+      final weatherProvider = context.read<WeatherProvider>();
+      await weatherProvider.loadWeather(20.5888, -100.3899); // Ciudad de México
+    });
   }
 
   @override
@@ -65,8 +73,8 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
           ),
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, _) => IconButton(
-              icon: Icon(themeProvider.isDarkMode 
-                  ? Icons.dark_mode 
+              icon: Icon(themeProvider.isDarkMode
+                  ? Icons.dark_mode
                   : Icons.light_mode),
               onPressed: themeProvider.toggleTheme,
             ),
@@ -78,7 +86,8 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
           children: [
             const Header(),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(
                 localizations.pendingTasks(taskProvider.tasks.length),
                 style: Theme.of(context).textTheme.titleMedium,
@@ -103,13 +112,16 @@ class _TaskScreenState extends State<TaskScreen> with SingleTickerProviderStateM
                             onDismissed: (_) => taskProvider.removeTask(index),
                             background: Container(
                               alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               decoration: BoxDecoration(
                                 color: Colors.red.shade300,
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              child: const Icon(Icons.delete, color: Colors.white),
+                              child:
+                                  const Icon(Icons.delete, color: Colors.white),
                             ),
                             child: TaskCard(
                               key: ValueKey(task.key),
