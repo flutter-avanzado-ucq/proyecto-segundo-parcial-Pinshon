@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../models/task_model.dart';
-import '../provider_task/holiday_provider.dart'; // Nuevo 24 de julio
+import '../provider_task/holiday_provider.dart';
 
 class TaskCard extends StatelessWidget {
   final Task task;
@@ -21,7 +21,9 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
+    if (localizations == null) return const SizedBox();
+
     final holidays = context.watch<HolidayProvider>().holidays;
     final isHoliday = task.dueDate != null &&
         holidays != null &&
@@ -51,24 +53,22 @@ class TaskCard extends StatelessWidget {
                     '${DateFormat.yMd(locale).format(task.dueDate!)} ${DateFormat.Hm(locale).format(task.dueDate!)}',
                     style: const TextStyle(color: Colors.grey),
                   );
-                  if (isHoliday) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        dateText,
-                        Text(
-                          localizations.holidayTag, // Replace 'holidayTag' with the correct getter name from your localization file
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return dateText;
-                  }
+                  return isHoliday
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            dateText,
+                            Text(
+                              localizations.holidayTag,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        )
+                      : dateText;
                 },
               )
             : null,

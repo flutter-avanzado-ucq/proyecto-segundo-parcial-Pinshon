@@ -37,12 +37,8 @@
   "cancel": "Cancelar",
   "confirm": "Confirmar",
   "holidayTag": "Feriado",
-  
   "pendingTasks": "{count, plural, =0{No hay tareas pendientes} =1{1 tarea pendiente} other{{count} tareas pendientes}}",
-  
   "newTaskBody": "Has agregado la tarea: {taskName}",
-  
   "taskUpdatedBody": "Has actualizado la tarea: {taskName}",
-  
   "updatedReminder": "Recordatorio: {taskName}"
 }

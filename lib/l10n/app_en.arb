@@ -37,12 +37,8 @@
   "cancel": "Cancel",
   "confirm": "Confirm",
   "holidayTag": "Holiday",
-  
   "pendingTasks": "{count, plural, =0{No pending tasks} =1{1 pending task} other{{count} pending tasks}}",
-  
   "newTaskBody": "You've added the task: {taskName}",
-  
   "taskUpdatedBody": "You've updated the task: {taskName}",
-  
   "updatedReminder": "Reminder: {taskName}"
 }
