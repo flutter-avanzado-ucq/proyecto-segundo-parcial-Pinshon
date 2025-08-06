@@ -1,4 +1,4 @@
-package com.example.flutter_animaciones_notificaciones
+package com.andrea.lista_tareas
 
 import io.flutter.embedding.android.FlutterActivity
 
